@@ -7,4 +7,36 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
+    <bean id="handlermapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <!-- 指定请求和Controller的对应关系 -->
+        <property name="mappings">
+            <props>
+                <prop key="/hello.do">helloController</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+
+    <!-- 配置contollers -->
+    <bean id="helloController" class="org.worker.mvcxml.controller.HelloController">
+    </bean>
+
+    <!--  配置处理器映射器    在配置Controller时需要指定bean的name；bean的name作为url进行查找 -->
+    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+    </bean>
+
+    <!--  配置处理器适配器 ;所有的处理器适配器都实现了HandlerAdapter接口 -->
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter">
+    </bean>
+
+
+    <!-- 视图解析器 ;解析jsp，默认使用jstl标签，所以必须导jstl包 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 设置view的前缀 -->
+        <property name="prefix" value="/WEB-INF/jsp/"></property>
+        <!-- 设置view的后缀 -->
+        <property name="suffix" value=".jsp"></property>
+        <!-- 指定前后缀后modelAndView.setViewName("");自动在前后加上前后缀 -->
+    </bean>
 </beans>
