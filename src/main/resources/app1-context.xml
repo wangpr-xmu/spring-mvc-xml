@@ -7,11 +7,53 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
+    <context:component-scan base-package="org.worker.mvcxml"/>
+
+    <!-- 增加新的返回格式 ：xml ,json-->
+    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager"
+                           enable-matrix-variables="true">
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper" ref="jacksonObjectMapper"/>
+            </bean>
+<!--            <bean class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter">-->
+<!--                <property name="objectMapper" ref="xmlObjectMapper"/>-->
+<!--            </bean>-->
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+
+<!--    <bean id="xmlObjectMapper" class="">-->
+<!--    </bean>-->
+
+    <bean id="jacksonObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
+    </bean>
+
+    <bean id="contentNegotiationManager"
+          class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="true"/>
+        <property name="favorParameter" value="false"/>
+        <property name="parameterName" value="mediaType"/>
+        <property name="ignoreAcceptHeader" value="false"/>
+        <property name="useJaf" value="false"/>
+        <property name="defaultContentType" value="application/json"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="html" value="text/html;charset=utf-8"/>
+                <entry key="json" value="application/json;charset=utf-8"/>
+                <entry key="xml" value="application/xml;charset=utf-8"/>
+            </map>
+        </property>
+    </bean>
+
+
+
     <bean id="handlermapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <!-- 指定请求和Controller的对应关系 -->
         <property name="mappings">
             <props>
                 <prop key="/hello.do">helloController</prop>
+                <prop key="/aspect.do">aspectTestController</prop>
             </props>
         </property>
     </bean>
@@ -20,6 +62,10 @@
 
     <!-- 配置contollers -->
     <bean id="helloController" class="org.worker.mvcxml.controller.HelloController">
+    </bean>
+
+    <bean id="aspectTestController" class="org.worker.mvcxml.controller.AspectTestController">
+        <property name="helloService" ref="helloService"></property>
     </bean>
 
     <!--  配置处理器映射器    在配置Controller时需要指定bean的name；bean的name作为url进行查找 -->
